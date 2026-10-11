@@ -106,6 +106,7 @@
 
 <noscript><style>
 .reveal{opacity:1!important;transform:none!important}
+#loader{display:none!important}
 [data-route][hidden]{display:block!important}
 </style></noscript>
 
@@ -321,6 +322,36 @@ ul.checks li::before{content:"";position:absolute;left:0;top:.45em;width:12px;he
 @keyframes fadeIn{from{opacity:0}}
 @keyframes pop{from{opacity:0;transform:translateY(30px) scale(.85)}}
 
+/* ---------- EKRAN ŁADOWANIA ---------- */
+#loader{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:linear-gradient(180deg,#070820,#1d1659 70%,#35206f);animation:ldGone .01s 8s forwards}
+@keyframes ldGone{to{opacity:0;visibility:hidden;pointer-events:none}}
+.ld-inner{text-align:center;padding:20px}
+.ld-cube{display:grid;place-items:center;height:200px;animation:bob 2.4s ease-in-out infinite}
+.ld-cube .cube{animation:ldspin 3s linear infinite}
+@keyframes ldspin{from{transform:rotateX(-24deg) rotateY(0deg)}to{transform:rotateX(-24deg) rotateY(360deg)}}
+.ld-title{font-family:var(--font-px);font-size:clamp(1rem,4vw,1.5rem);color:#fff;text-shadow:3px 3px 0 var(--violet-3);margin:.5rem 0 1.4rem}
+.ld-title b{color:var(--violet-2);font-weight:400;margin-left:.5em}
+.ld-bar{width:min(320px,72vw);height:28px;margin:0 auto;border:4px solid var(--line);background:#05061a;box-shadow:inset 3px 3px 0 rgba(0,0,0,.5),0 0 0 3px rgba(167,139,250,.25)}
+.ld-bar i{display:block;height:100%;width:0;background:repeating-linear-gradient(90deg,#7c3aed 0 16px,#5b21b6 16px 20px);transition:width .15s linear}
+.ld-text{font-family:var(--font-vt);font-size:1.5rem;color:var(--violet-2);margin:.9rem 0 0}
+
+/* ---------- SOCIALE ---------- */
+.socials{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:26px}
+.soc{display:flex;align-items:center;gap:1.2rem;padding:1.3rem 1.5rem;text-decoration:none;color:inherit;
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.soc:hover,.soc:focus-visible{transform:translateY(-8px);
+  box-shadow:inset 4px 4px 0 rgba(167,139,250,.3),inset -4px -4px 0 rgba(0,0,0,.4),0 0 0 4px var(--violet-2),0 0 40px rgba(124,58,237,.5)}
+.soc .ic{flex:none;width:72px;height:72px;display:grid;place-items:center;background:var(--violet);border:4px solid var(--line);color:#fff;
+  box-shadow:inset 4px 4px 0 rgba(255,255,255,.3),inset -4px -4px 0 rgba(0,0,0,.35);transition:background .25s,transform .35s cubic-bezier(.2,1.4,.4,1)}
+.soc .ic svg{width:36px;height:36px;fill:currentColor}
+.soc:hover .ic,.soc:focus-visible .ic{transform:rotate(-6deg) scale(1.08)}
+.soc.yt:hover .ic,.soc.yt:focus-visible .ic{background:#e60023}
+.soc.tt:hover .ic,.soc.tt:focus-visible .ic{background:#0b0b13;box-shadow:inset 4px 4px 0 rgba(255,255,255,.12),inset -4px -4px 0 rgba(0,0,0,.35),-4px -4px 0 #25f4ee,4px 4px 0 #fe2c55}
+.soc h3{font-size:.9rem;color:#fff;margin-bottom:.35rem}
+.soc p{margin:0;color:var(--muted);font-size:.98rem;line-height:1.45}
+.soc .go{margin-left:auto;font-family:var(--font-vt);font-size:2rem;color:var(--violet-2);transition:transform .3s}
+.soc:hover .go{transform:translateX(6px)}
+
 /* ---------- DISCORD ---------- */
 .discord-box{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;padding:1.8rem 2rem}
 .discord-box .ic{width:76px;height:76px;display:grid;place-items:center;font-size:2.4rem;background:#5865f2;border:4px solid var(--line);
@@ -372,6 +403,14 @@ footer small{display:block;max-width:420px;color:#9ea0c8;margin-top:.5rem}
 
 <div class="sky" aria-hidden="true" id="sky"><div class="moon"></div></div>
 <div id="drops" aria-hidden="true"></div>
+<div id="loader" role="status" aria-live="polite">
+  <div class="ld-inner">
+    <div class="ld-cube" id="ldCube" aria-hidden="true"></div>
+    <p class="ld-title">INSTANT<b>TXT</b></p>
+    <div class="ld-bar" aria-hidden="true"><i id="ldFill"></i></div>
+    <p class="ld-text" id="ldText">Ładowanie świata...</p>
+  </div>
+</div>
 <div id="curtain" aria-hidden="true"></div>
 
 <header class="site-header">
@@ -384,6 +423,7 @@ footer small{display:block;max-width:420px;color:#9ea0c8;margin-top:.5rem}
       <a href="#/" data-scroll="produkty">Produkty</a>
       <a href="#/" data-scroll="jak-to-dziala" class="opt">Jak to działa</a>
       <a href="#/" data-scroll="discord">Discord</a>
+      <a href="#/" data-scroll="sociale">Sociale</a>
       <a href="#/" data-scroll="faq">FAQ</a>
     </nav>
   </div>
@@ -499,6 +539,29 @@ footer small{display:block;max-width:420px;color:#9ea0c8;margin-top:.5rem}
           <p>Po zakupie wejdź na serwer, stwórz ticket i odbierz swój texturepack. Na Discordzie pomożemy Ci też z instalacją i odpowiemy na pytania. Na naszym Discordzie obsługujemy też płatności paysafecard.</p>
         </div>
         <a class="btn discord" href="https://discord.gg/hF6JbP63Xd" target="_blank" rel="noopener noreferrer">Dołącz na Discord</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="sociale">
+    <div class="wrap">
+      <h2 class="title reveal">Sociale</h2>
+      <p class="sub reveal">Obserwuj nas i bądź na bieżąco z nowymi aktualizacjami.</p>
+      <div class="socials">
+        <div class="reveal" style="--d:.05s">
+          <a class="soc tt panel" data-social="tiktok" href="#" aria-label="Instant TXT na TikToku">
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></span>
+            <span><h3>TikTok</h3></span>
+            <span class="go" aria-hidden="true">›</span>
+          </a>
+        </div>
+        <div class="reveal" style="--d:.18s">
+          <a class="soc yt panel" data-social="youtube" href="#" aria-label="Instant TXT na YouTube">
+            <span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></span>
+            <span><h3>YouTube</h3></span>
+            <span class="go" aria-hidden="true">›</span>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -662,6 +725,11 @@ var STRIPE_LINKS = {
   podstawowy: 'https://buy.stripe.com/14A5kw2jA06k41v7h01Nu05',
   plus:       'https://buy.stripe.com/fZuaEQ5vMg5ibtX44O1Nu06',
   premium:    'https://buy.stripe.com/7sY8wI1fwaKYdC5atc1Nu07'
+};
+
+var SOCIAL_LINKS = {
+  tiktok:  '',   // wklej link do TikToka, np. 'https://www.tiktok.com/@twojprofil'
+  youtube: ''    // wklej link do YouTube, np. 'https://www.youtube.com/@twojkanal'
 };
 
 var META = {
@@ -858,7 +926,7 @@ function go(route,first){
     if(pendingScroll){scrollToId(pendingScroll,true);pendingScroll=null;}
     else window.scrollTo({top:0,behavior:'auto'});
     drops.innerHTML='';
-    if(PRODUCT_ROUTES.indexOf(route)>-1)dropGrass();
+    if(!first&&PRODUCT_ROUTES.indexOf(route)>-1)dropGrass();
     return animate?uncover(cells):null;
   }).then(function(){
     busy=false;
@@ -885,6 +953,10 @@ function toast(msg){
   var t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);
   setTimeout(function(){t.remove();},4500);
 }
+document.querySelectorAll('[data-social]').forEach(function(a){
+  var u=SOCIAL_LINKS[a.dataset.social];
+  if(u){a.href=u;a.target='_blank';a.rel='noopener noreferrer';}
+});
 document.querySelectorAll('[data-stripe]').forEach(function(a){
   a.setAttribute('role','button');a.removeAttribute('target');a.href='#';
 });
@@ -895,6 +967,7 @@ document.addEventListener('click',function(e){
     closePay();return;
   }
   if(a.id==='payPsc'){closePay();return;}
+  if(a.dataset.social&&!SOCIAL_LINKS[a.dataset.social]){e.preventDefault();toast('Ten link pojawi się wkrótce.');return;}
   if(a.dataset.stripe){
     e.preventDefault();
     var info=a.closest('.product-info');
@@ -920,6 +993,41 @@ if('IntersectionObserver' in window&&!reduce){
 
 /* ---------- START ---------- */
 go(routeFromHash(),true);
+
+/* ---------- EKRAN ŁADOWANIA ---------- */
+(function intro(){
+  var L=document.getElementById('loader');
+  if(!L)return;
+  if(reduce){L.remove();return;}
+  var c=cube(110,SETS.amethyst);c.classList.add('free');
+  document.getElementById('ldCube').appendChild(c);
+  var fill=document.getElementById('ldFill'),txt=document.getElementById('ldText');
+  var MIN=1900,t0=performance.now(),ready=false,done=false;
+  function setP(p){
+    fill.style.width=p+'%';
+    txt.textContent=p>=100?'Gotowe!':(p>55?'Generowanie bloków...':'Ładowanie świata...');
+  }
+  var loadP=new Promise(function(r){if(document.readyState==='complete')r();else window.addEventListener('load',r);});
+  var fontsP=(document.fonts&&document.fonts.ready)?document.fonts.ready:Promise.resolve();
+  Promise.all([loadP,fontsP]).then(function(){ready=true;},function(){ready=true;});
+  setTimeout(function(){ready=true;},5000);
+  function finish(){
+    if(done)return;done=true;
+    var cells=buildCurtain();
+    cells.forEach(function(o){o.d.style.transform='scale(1.04)';});
+    curtain.style.pointerEvents='auto';
+    L.remove();
+    if(PRODUCT_ROUTES.indexOf(current)>-1)dropGrass();
+    uncover(cells);
+  }
+  (function loop(){
+    if(done)return;
+    var el=performance.now()-t0,p=Math.min(92,el/MIN*92);
+    if(ready&&el>=MIN){setP(100);setTimeout(finish,380);return;}
+    setP(Math.round(p));
+    requestAnimationFrame(loop);
+  })();
+})();
 })();
 </script>
 </body>
